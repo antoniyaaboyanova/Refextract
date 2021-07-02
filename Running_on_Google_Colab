@@ -1,0 +1,25 @@
+
+import os
+import numpy as np
+import pandas as pd
+from google.colab import files
+%pip install scipy PyPDF2 #This package is needed to convert a pdf file into a txt file. (We may not need it, but let's see)
+import PyPDF2
+
+#We need all these dependancies to be able use refextract
+!apt-get install libmagic-dev
+!pip install python-magic
+!pip install refextract
+!sudo apt-get update
+!sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
+!sudo apt-get install ./libpoppler73_0.62.0-2ubuntu2.12_amd64.deb
+!sudo apt-get install ./xpdf_3.04-7_amd64.deb 
+!apt-get install libpoppler-cpp-dev
+!apt-get install poppler-utils 
+!pip install pdftotext
+
+
+
+#Make sure magic is imported before refextract
+import magic 
+from refextract import extract_references_from_file
