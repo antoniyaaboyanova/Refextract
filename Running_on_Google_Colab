@@ -1,4 +1,4 @@
-
+#General libraries
 import os
 import numpy as np
 import pandas as pd
@@ -23,3 +23,75 @@ import PyPDF2
 #Make sure magic is imported before refextract
 import magic 
 from refextract import extract_references_from_file
+
+#Import the Google Drive
+from google.colab import drive
+drive.mount('/content/drive') #it will ask you for a verification code
+
+#Count the number of files in the folder
+FOLDER_PATH = 'recurrence, networks and all that jazz'
+ROOT_PATH = '/content/drive/MyDrive/'
+number_files = print(len(os.listdir(os.path.join(ROOT_PATH, FOLDER_PATH))))
+
+#Cutting the names of the pdf files to create meaningful categories
+#Split 1: authors names from year and heading
+entries = [entry for entry in os.listdir(os.path.join(ROOT_PATH, FOLDER_PATH))]
+
+entries_split = []
+year_heading_split = []
+
+x = list(range(0,len(entries)))
+for i in x: 
+  a = entries[i].split(",", 1)
+  entries_split.append(a)
+
+authors_names = [item[0] for item in entries_split]
+year_heading_split = [item[-1] for item in entries_split]
+
+#Split 2: year from heading
+new = []
+for i in x:
+  b = year_heading_split[i].split("-", 1)
+  new.append(b)
+
+
+year = [item[0] for item in new]
+heading = [item[-1] for item in new]
+
+#Getting rid of .pdf
+heading2 = []
+for a_string in heading:
+    new_string = a_string.replace(".pdf", "")
+    heading2.append(new_string)
+
+#Saving as a csv file
+d = {'Authors': authors_names, 'Year': year, 'Heading': heading2}
+df = pd.DataFrame(data=d)
+df = df.sort_values('Authors', ascending=False)
+final_file = df.to_csv('Google_colab_dataframe.csv')
+
+#Comment out if you want to save the csv file on your local console 
+#files.download("Google_colab_dataframe.csv") 
+
+######### REFEXTRACT #########
+
+#To check if the library is successfully running first run the URL option
+from refextract import extract_references_from_url
+references = extract_references_from_url('https://arxiv.org/pdf/1503.07589.pdf')
+print(references) #Play around with the URL.
+
+#To implement the version from pdf
+from refextract import extract_references_from_file
+references = extract_references_from_file(ROOT_PATH + FOLDER_PATH + '/' + entries[0]) #You need the whole path it shoudl work
+
+#Creating a loop that iterated through all the pdf files - this will need optimitization as it is turning it into one long list
+references = []
+for paper in list(range(0, len(entries))):
+  references.extend(extract_references_from_file(ROOT_PATH + FOLDER_PATH + '/' + entries[paper]))
+
+
+
+
+
+
+
