@@ -1,3 +1,9 @@
+
+######### IMPORTANT #########
+#The outcome from using refextract is not the reference of the article, but the reference list from the article, which is not helpful. 
+#One way to deal with this is to use a different tool: e.g., https://github.com/metachris/pdfx
+
+
 #General libraries
 import os
 import numpy as np
@@ -84,11 +90,23 @@ print(references) #Play around with the URL.
 from refextract import extract_references_from_file
 references = extract_references_from_file(ROOT_PATH + FOLDER_PATH + '/' + entries[0]) #You need the whole path it shoudl work
 
-#Creating a loop that iterated through all the pdf files - this will need optimitization as it is turning it into one long list
+#Creating a loop that iterated through all the pdf files - this will need optimitization as it is turning it into one long list - also it will take long time. 
 references = []
 for paper in list(range(0, len(entries))):
   references.extend(extract_references_from_file(ROOT_PATH + FOLDER_PATH + '/' + entries[paper]))
 
+######### pdfx #########
+!sudo easy_install -U pdfx
+!pip install pdfx 
+!pip install -e .
+!pip install -r requirements_dev.txt
+
+import pdfx
+pdf = pdfx.PDFx(ROOT_PATH + FOLDER_PATH2 + '/' + entries2[0])
+metadata = pdf.get_metadata()
+references_list = pdf.get_references()
+references_dict = pdf.get_references_as_dict()
+#pdf.download_pdfs("target-directory") #in case you want to download the references 
 
 
 
